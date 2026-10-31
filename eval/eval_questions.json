@@ -1,0 +1,17 @@
+{
+  "answerable": [
+    {"question": "How does the cache-aside pattern work?", "expected": "cache-aside"},
+    {"question": "What is a cache miss?", "expected": "cache miss"},
+    {"question": "Why should cached data have an expiry time?", "expected": "time to live"},
+    {"question": "How does fixed window rate limiting work?", "expected": "fixed window"},
+    {"question": "Which HTTP status does a rate limited client receive?", "expected": "429"},
+    {"question": "What other data structures does Redis support?", "expected": "sorted sets"},
+    {"question": "Should Redis be the source of truth for critical data?", "expected": "source of truth"},
+    {"question": "What is Redis often used as in front of a slower database?", "expected": "in front of a slower database"}
+  ],
+  "unanswerable": [
+    "What is the capital of France?",
+    "How do I bake sourdough bread?",
+    "Who won the football world cup in 2010?"
+  ]
+}

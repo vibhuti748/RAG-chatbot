@@ -1,0 +1,7 @@
+venv/
+__pycache__/
+*.pyc
+.env
+*.pem
+deploy_key
+deploy_key.pub

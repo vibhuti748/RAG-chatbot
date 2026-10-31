@@ -1,0 +1,280 @@
+{
+  "info": {
+    "name": "RAG Document Q&A API",
+    "description": "Set baseUrl (default http://localhost:5001). Run 'Upload document' first and choose sample_docs/redis_notes.txt in the Body tab (form-data, key 'file').",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5001"
+    }
+  ],
+  "item": [
+    {
+      "name": "Upload document",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 201\", function () { pm.response.to.have.status(201); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": []
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/documents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "documents"
+          ]
+        },
+        "description": "Expected: 201 with id, filename and num_chunks. Select a .txt or .pdf file for the 'file' field."
+      }
+    },
+    {
+      "name": "List documents",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/documents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "documents"
+          ]
+        },
+        "description": "Expected: 200 with a list of documents."
+      }
+    },
+    {
+      "name": "Search chunks",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"query\": \"What is cache-aside?\", \"top_k\": 3}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/search",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "search"
+          ]
+        },
+        "description": "Expected: 200 with the closest chunks and similarity scores."
+      }
+    },
+    {
+      "name": "Ask a question",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Has an answer\", function () { pm.expect(pm.response.json()).to.have.property(\"answer\"); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"question\": \"What is cache-aside?\", \"top_k\": 4}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/ask",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ask"
+          ]
+        },
+        "description": "Expected: 200 with an answer and sources. Run it twice and 'cached' becomes true."
+      }
+    },
+    {
+      "name": "Ask an unrelated question (I don't know)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Answered is false\", function () { pm.expect(pm.response.json().answered).to.be.false; });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"question\": \"What is the capital of France?\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/ask",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ask"
+          ]
+        },
+        "description": "Expected: 200 with answered=false and no sources (no AI model call)."
+      }
+    },
+    {
+      "name": "Empty question returns 400",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 400\", function () { pm.response.to.have.status(400); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"question\": \"  \"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/ask",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ask"
+          ]
+        },
+        "description": "Expected: 400."
+      }
+    },
+    {
+      "name": "Delete document",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 204 or 404', function () { pm.expect(pm.response.code).to.be.oneOf([204, 404]); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/documents/1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "documents",
+            "1"
+          ]
+        },
+        "description": "Expected: 204 (deleted) or 404 if document 1 does not exist."
+      }
+    }
+  ]
+}
