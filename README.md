@@ -4,10 +4,9 @@ A backend API that answers questions about your own documents. You upload PDF or
 text files, and the API finds the most relevant passages and asks an AI model to
 answer using only those passages, with sources.
 
-Built with Flask, PostgreSQL + pgvector, Redis, OpenAI, Docker, Pytest and
-GitHub Actions.
+Built with Flask, PostgreSQL + pgvector, Redis, OpenAI, Docker and Pytest.
 
-**Live demo:** <add your URL here, if deployed>
+**Demo:** runs locally with Docker Compose (see "Run locally"). Screen recording: <add link>
 
 ## How it works
 
@@ -24,7 +23,7 @@ GitHub Actions.
 - Prompt-injection hardening: the model is told to treat document text as data
 - Embedding or model failures return clean errors and never leave half-saved data
 - Retrieval evaluation script (hit@1 and hit@3)
-- Docker Compose, tests that need no API key, and a CI/CD pipeline to AWS EC2
+- Docker Compose setup and tests that need no API key (so they cost nothing)
 
 ## API
 

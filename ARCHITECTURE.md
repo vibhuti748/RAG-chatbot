@@ -32,8 +32,7 @@ This pattern is called **RAG** (Retrieval-Augmented Generation): first retrieve,
 | `pytest.ini` | Tells pytest where the tests are. |
 | `eval/run_eval.py` and `eval/eval_questions.json` | Measures how often search finds the right chunk. |
 | `postman/` | A Postman collection to try every endpoint. |
-| `.github/workflows/ci-cd.yml` | GitHub Actions: runs tests, then deploys to EC2 on pushes to `main`. |
-| `README.md`, `DEPLOYMENT.md` | Project front page and AWS deployment steps. |
+| `README.md`, `DEPLOYMENT.md` | Project front page, and optional AWS deployment steps. |
 
 ## What happens during `POST /ask` (inside `app.py`)
 
